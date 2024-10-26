@@ -7,6 +7,5 @@ import (
 
 func main() {
 	connection := db.GetDBConnection()
-	db.RunMigrations(connection)
 	cli.HandleCLIOptions(connection)
 }

@@ -12,12 +12,17 @@ import (
 
 func HandleCLIOptions(connection *sql.DB) {
 	var (
+		setup        bool
 		retrieve_all bool
 		create_new   bool
 	)
+	flag.BoolVar(&setup, "setup", false, "Retrieves all journal entries")
 	flag.BoolVar(&retrieve_all, "retrieve-all", false, "Retrieves all journal entries")
 	flag.BoolVar(&create_new, "create-new", false, "Creates new journal entry")
 	flag.Parse()
+	if setup {
+		db.RunMigrations(connection)
+	}
 	if retrieve_all {
 		retrieveAll(connection)
 	}
