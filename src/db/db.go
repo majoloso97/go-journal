@@ -26,7 +26,6 @@ func GetDBConnection() *sql.DB {
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
-	fmt.Println("Connected")
 	return db
 }
 func RunMigrations(db *sql.DB) {
