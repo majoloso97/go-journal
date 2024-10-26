@@ -2,12 +2,18 @@ package db
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	"log"
+	_ "majoloso97/go-journal/db/migrations"
 	"majoloso97/go-journal/models"
 
+	"github.com/pressly/goose/v3"
 	_ "modernc.org/sqlite"
 )
+
+//go:embed migrations/*
+var embedMigrations embed.FS
 
 func GetDBConnection() *sql.DB {
 	var db *sql.DB
@@ -22,6 +28,16 @@ func GetDBConnection() *sql.DB {
 	}
 	fmt.Println("Connected")
 	return db
+}
+func RunMigrations(db *sql.DB) {
+	goose.SetDialect("sqlite")
+	goose.SetBaseFS(embedMigrations)
+	migrationsDir := "migrations"
+
+	// Run migrations directly
+	if err := goose.Up(db, migrationsDir); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
 }
 
 func GetJournalEntries(db *sql.DB) ([]models.JournalEntry, error) {
